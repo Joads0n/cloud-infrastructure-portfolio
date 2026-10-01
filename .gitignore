@@ -1,0 +1,39 @@
+# Local environment and authentication files
+.env
+.env.*
+!.env.example
+.aws/
+.config/gcloud/
+credentials.json
+application_default_credentials.json
+*-credentials.json
+*-key.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Terraform local state, inputs, plans, and crash logs
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+# Commit .terraform.lock.hcl when Terraform is introduced.
+
+# Local tooling and operating system files
+.venv/
+__pycache__/
+.DS_Store
+Thumbs.db
+*.swp
