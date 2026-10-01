@@ -24,7 +24,7 @@ Phase 0 is in progress: establishing a coherent GitHub profile and reusable repo
 
 Local documentation standards, issue and pull request templates, and ignore rules are available. The portfolio repository is [Joads0n/cloud-infrastructure-portfolio](https://github.com/Joads0n/cloud-infrastructure-portfolio), and the existing profile repository is [Joads0n/Joads0n](https://github.com/Joads0n/Joads0n). Both were confirmed by the owner.
 
-Git is initialized locally with the portfolio repository configured as `origin`, and SSH read access to both repositories has been verified. The prepared profile README includes the portfolio link and the existing public professional contact links. See the [roadmap](TASKS.md) for publication status and remaining work. No cloud resources have been provisioned.
+The portfolio foundation and revised profile README were published on 2026-10-01. The profile includes the portfolio link and the existing public professional contact links. See the [roadmap](TASKS.md) for validation details and remaining work, including GitHub labels and branch protection settings. No cloud resources have been provisioned.
 
 ## Repository documents
 

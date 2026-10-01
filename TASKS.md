@@ -13,8 +13,10 @@ Local artifacts are available in [portfolio standards](docs/portfolio-standards.
 
 Git is initialized in this workspace on `main`, with `origin` set to `git@github.com:Joads0n/cloud-infrastructure-portfolio.git`. SSH read access to both repositories was verified on 2026-10-01. The portfolio remote was empty, and the existing profile README was inspected before preparing its update. The completed tasks above describe the prepared artifacts; publication is tracked separately below.
 
-- [ ] Publish the portfolio foundation to `Joads0n/cloud-infrastructure-portfolio`.
-- [ ] Publish the revised profile README to `Joads0n/Joads0n`.
+- [x] Publish the portfolio foundation to `Joads0n/cloud-infrastructure-portfolio`.
+- [x] Publish the revised profile README to `Joads0n/Joads0n`.
+
+Published on 2026-10-01: portfolio foundation commit `cc54730` and profile commit `37f63ce`. Local Markdown links, whitespace, common credential patterns, representative ignore rules, and matching profile copies were checked before publication. No cloud deployment was performed.
 
 Label creation and branch protection configuration remain pending; only their recommended standards have been documented.
 
