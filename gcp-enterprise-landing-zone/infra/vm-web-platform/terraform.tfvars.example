@@ -1,0 +1,81 @@
+# Somente valores fictícios. Copie para um arquivo privado e substitua projeto, billing e imagem.
+# Labels são independentes por recurso; null, {} ou omissão mantêm apenas as automáticas.
+# Zonas das VMs devem pertencer à região em deployment_settings.
+# O modo create_project=true também solicita a exclusão do projeto no destroy.
+
+# Projeto, faturamento, hierarquia e labels do projeto
+project_settings = {
+  create_project     = true
+  project_id         = "fictional-crl-prod"
+  project_name       = "Cedar Route Production"
+  billing_account_id = "000000-000000-000000"
+  organization_id    = null
+  folder_id          = null
+  labels = {
+    owner       = "platform"
+    cost_center = "cloud-lab"
+    scope       = "landing-zone"
+  }
+}
+
+# Região, prefixo e ambiente
+deployment_settings = {
+  environment     = "prod"
+  resource_prefix = "crl-prod"
+  region          = "us-central1"
+}
+
+# Rede; regras de firewall e NAT permanecem definidas pela arquitetura
+network_settings = {
+  subnet_cidr = "10.80.10.0/24"
+  vpc_name    = "crl-prod-vpc"
+  subnet_name = "crl-prod-subnet"
+}
+
+# VMs, zonas, discos, réplicas e labels independentes
+compute_settings = {
+  image             = "projects/debian-cloud/global/images/debian-12-fictional-placeholder"
+  backend_count     = 2
+  vm_base_name      = "crl-prod-nginx"
+  machine_type      = "e2-micro"
+  boot_disk_type    = "pd-standard"
+  boot_disk_size_gb = 10
+  enable_display    = true
+  labels = {
+    owner       = "operations"
+    cost_center = "cloud-lab"
+    application = "nginx"
+  }
+  zones = ["us-central1-a", "us-central1-b"]
+}
+
+# Aplicação de demonstração
+application_settings = {
+  hostname = "app.cedar-route.example"
+}
+
+# Exposição HTTP/HTTPS e balanceamento
+load_balancer_settings = {
+  allow_public_http       = true
+  lb_name                 = "crl-prod-http"
+  backend_max_utilization = 0.8
+  enable_http             = true
+  enable_https            = false
+  ssl_certificate_ids     = []
+}
+
+# Snapshots dos discos de inicialização
+snapshot_settings = {
+  start_time     = "05:00"
+  retention_days = 7
+  location       = "us"
+  labels = {
+    owner       = "platform"
+    cost_center = "cloud-lab"
+  }
+}
+
+# Identidade de execução sem chaves
+identity_settings = {
+  runtime_service_account_id = "crl-runtime-prod"
+}

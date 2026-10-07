@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cedar Route Logistics — Backend __BACKEND_TOKEN__</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 2rem 1rem; background: #eef2f6; color: #17202a; font: 1.1rem/1.6 system-ui, sans-serif; }
+    main { max-width: 52rem; margin: auto; padding: 2rem; background: white; border-top: 1rem solid #__BACKEND_COLOR__; border-radius: .5rem; }
+    h1 { line-height: 1.2; }
+    .backend { padding: 1.5rem; background: #f3f5f7; border-left: .75rem solid #__BACKEND_COLOR__; }
+    .backend p { margin: 0; }
+    .backend strong { display: block; font: bold clamp(1.4rem, 5vw, 3rem)/1.5 monospace; overflow-wrap: anywhere; }
+    button { margin-top: 1rem; padding: .7rem 1rem; font: inherit; background: #17202a; color: white; border: 0; border-radius: .3rem; cursor: pointer; }
+    button:focus-visible { outline: 3px solid #2463eb; outline-offset: 4px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Cedar Route Logistics</h1>
+    <p>Fictional infrastructure demonstration. No customer data or business transactions.</p>
+    <p>Environment: ${environment}</p>
+    <section class="backend" aria-label="Responding backend">
+      <p>This response was served by</p>
+      <strong>BACKEND __BACKEND_TOKEN__</strong>
+      <p>Each VM has its own identifier and accent color.</p>
+    </section>
+    <button type="button" onclick="window.location.reload()">Send another request</button>
+    <p>Watch the identifier change when another VM responds. The load balancer does not guarantee alternating backends on each request.</p>
+    <p>Served by Nginx behind a Google Cloud Application Load Balancer.</p>
+  </main>
+</body>
+</html>

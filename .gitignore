@@ -1,4 +1,13 @@
 # Local environment and authentication files
+.private/
+# Orientação local de agentes, planejamento e rascunhos não publicados
+AGENTS.md
+PLAN.md
+TASKS.md
+.agents/
+.codex/
+profile-readme-draft.md
+github-configuration.md
 .env
 .env.*
 !.env.example
@@ -19,6 +28,7 @@ application_default_credentials.json
 *.tfstate.*
 *.tfvars
 *.tfvars.json
+*.tfbackend
 *.tfplan
 tfplan
 crash.log

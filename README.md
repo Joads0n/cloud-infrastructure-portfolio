@@ -1,44 +1,50 @@
-# Cloud Infrastructure Portfolio
+# Cloud Infrastructure Engineering | GCP & AWS
 
-This repository is the planning and standards baseline for a technical GitHub portfolio focused on Cloud Infrastructure Engineering.
+Current Landing Zone scope: [single disposable production project (or explicit existing-project test mode)](gcp-enterprise-landing-zone/docs/single-project-architecture.md), external LB, two private replicas with manual scaling, reserved IPs, firewall, and snapshots. Seed remains preserved; legacy bootstrap is excluded; the new production configuration requires a fresh owner-reviewed plan. All plans/applies are owner-operated. Earlier multi-project execution records below are historical.
 
-## Professional focus
+A portfolio catalog covering cloud foundations, Terraform, networking, security, governance, FinOps, recovery, and workload migration. Cases use fictional scenarios to connect requirements, architecture decisions, implementation, and validation evidence.
 
-- Google Cloud Platform (primary specialization) and AWS
-- Cloud Architecture, Cloud Security, and Cloud Networking
-- Hybrid Connectivity, Cloud Migration, and Cloud Foundation / Landing Zones
-- Cloud Governance, FinOps, IAM, Observability, Reliability, and Disaster Recovery
-- Infrastructure as Code with Terraform
+## Explore the catalog
 
-The portfolio intentionally does not position its owner as a Software, Backend, Frontend, or Full Stack Developer.
+| Area | Focus | Status |
+| --- | --- | --- |
+| [Portfolio catalog](cloud-infrastructure-portfolio/README.md) | Roadmap, shared standards, and case index | Available |
+| [GCP Enterprise Foundation](gcp-enterprise-foundation/README.md) | Organization hierarchy, administrative boundaries, organizational guardrails | Planned; organization unavailable |
+| [GCP Enterprise Landing Zone](gcp-enterprise-landing-zone/README.md) | Single production project, external LB, private Nginx replicas, telemetry and snapshots | Production configuration ready for review; prior dev tests owner-confirmed |
+| [Terraform Enterprise Infrastructure](terraform-enterprise-infrastructure/README.md) | Future distinct IaC engineering case | Planned; scope to be defined |
+| [GCP Secure Network Architecture](gcp-secure-network-architecture/README.md) | Addressing, segmentation, routing, DNS, traffic controls | Planned |
+| [Cloud Security Architecture](cloud-security-architecture/README.md) | Workload identity, secrets/data protection, hardening, detection | Planned |
+| [Cloud Governance Framework](cloud-governance-framework/README.md) | Standards, policy checks, exceptions, control evidence | Planned |
+| [Cloud FinOps Lab](cloud-finops-lab/README.md) | Allocation, budgets, forecasting, rightsizing | Planned |
+| [Hybrid Cloud Networking](hybrid-cloud-networking/README.md) | VPN, route exchange, peer simulation, failure diagnosis | Planned |
+| [Disaster Recovery](disaster-recovery/README.md) | Backup/restore, data integrity, measured recovery objectives | Planned |
+| [Workload Migration Case](workload-migration-case/README.md) | Assessment, cutover, rollback, recovery | Planned |
 
-## Portfolio approach
+## Organization
 
-Each repository will be a fictional but plausible enterprise case study. It will explain the problem, requirements, architecture, decisions, implementation, validation, security, governance, costs, trade-offs, and outcome—not merely show a tool configuration.
-
-No customer, employer, or proprietary information may be included. All organizations, workloads, identifiers, network ranges, metrics, and costs will be fictional.
-
-## Current status
-
-Phase 0 is in progress: establishing a coherent GitHub profile and reusable repository standards. The first case, **GCP Enterprise Landing Zone / Cloud Foundation**, will begin only after this foundation is complete.
-
-Local documentation standards, issue and pull request templates, and ignore rules are available. The portfolio repository is [Joads0n/cloud-infrastructure-portfolio](https://github.com/Joads0n/cloud-infrastructure-portfolio), and the existing profile repository is [Joads0n/Joads0n](https://github.com/Joads0n/Joads0n). Both were confirmed by the owner.
-
-The portfolio foundation and revised profile README were published on 2026-10-01. The profile includes the portfolio link and the existing public professional contact links. See the [roadmap](TASKS.md) for validation details and remaining work, including GitHub labels and branch protection settings. No cloud resources have been provisioned.
-
-## Repository documents
-
-- [Portfolio plan](PLAN.md)
-- [Portfolio roadmap](TASKS.md)
-- [Engineering and safety guide](AGENTS.md)
-- [Reusable portfolio standards](docs/portfolio-standards.md)
-- [Profile README draft](docs/profile-readme-draft.md)
-- [Case README template](docs/templates/case-readme.md)
-- [Architecture decision template](docs/templates/adr.md)
-
-## Intended case sequence
+This is **one Git repository**, with one folder per area. The GitHub remote remains `Joads0n/cloud-infrastructure-portfolio`; the local folder is `cloud-portfolio-catalog`. `Joads0n/` in the conceptual portfolio diagram represents the GitHub profile, not another local repository or nested checkout.
 
 ```text
-Assessment → Cloud Foundation → Networking → Security → Migration
-→ Terraform → FinOps → Governance → Disaster Recovery
+README.md                              # Presentation and links
+cloud-infrastructure-portfolio/         # Catalog, roadmap, common standards
+gcp-enterprise-foundation/             # Planned organization-wide foundation
+gcp-enterprise-landing-zone/           # Complete scenario, foundation, networks, workloads, tests
+terraform-enterprise-infrastructure/  # Planned distinct IaC case; scope to be defined
+gcp-secure-network-architecture/      # Planned network architecture
+cloud-security-architecture/          # Docs, infra, tests
+cloud-governance-framework/            # Planned rules, exceptions, evidence
+cloud-finops-lab/                      # Docs, infra, scripts
+hybrid-cloud-networking/               # Planned hybrid connectivity
+disaster-recovery/                    # Planned recovery drills
+workload-migration-case/              # Docs, infra, scripts
 ```
+
+The catalog and ten case folders are peers at the repository root. The existing GitHub profile repository is separate from this catalog; local planning and profile drafts are not part of this delivery.
+
+[Case boundaries and resource ownership](cloud-infrastructure-portfolio/docs/decisions/0002-case-boundaries-and-resource-ownership.md) distinguish organizational Foundation from project-level Landing Zone and keep Networking, Security, and Governance separate. The [Landing Zone consolidation](gcp-enterprise-landing-zone/docs/decisions/0007-self-contained-landing-zone-case.md) brings its workload roots into the same case without merging states or changing resources. Other cases remain planned.
+
+## Evidence and safety
+
+Local mock tests are distinct from cloud validation. Planned cases contain scaffolding only. Public scenarios, workloads, identifiers, costs, and requirements must be fictional and independent of employer or customer artifacts.
+
+See the [portfolio standards](cloud-infrastructure-portfolio/docs/portfolio-standards.md), the case status table above, and the [repository layout](cloud-infrastructure-portfolio/docs/repository-layout.md).
