@@ -35,15 +35,15 @@ A tabela descreve o exemplo padrão com projeto novo, HTTP e duas réplicas. Qua
 | --- | --- | --- |
 | Projeto GCP | 1 projeto descartável com labels e vínculo a billing existente | Criado somente com `project_settings.create_project=true`; não cria conta de faturamento, organização ou pasta. [project.tf](infra/vm-web-platform/project.tf) |
 | APIs | 6 APIs básicas e Monitoring no modo de criação | Compute, IAM, Logging, IAP, OS Login, Service Usage e Monitoring; no modo existente, apenas Monitoring é gerenciada aqui. [apis.tf](infra/vm-web-platform/apis.tf) |
-| Identidade e IAM | 1 conta de serviço e 2 concessões de telemetria | Escrita de logs e métricas, sem chaves. [service-account.tf](infra/vm-web-platform/service-account.tf), [iam.tf](infra/vm-web-platform/iam.tf) |
+| Identidade e IAM | 1 conta de serviço e 2 concessões de telemetria | Escrita de logs e métricas, sem chaves. [service_account.tf](infra/vm-web-platform/service_account.tf), [iam.tf](infra/vm-web-platform/iam.tf) |
 | Rede | 1 VPC personalizada e 1 sub-rede regional | CIDR privado configurável; exemplo em us-central1. [network.tf](infra/vm-web-platform/network.tf) |
 | Saída para internet | 1 Cloud Router, 1 Cloud NAT e 1 IPv4 regional reservado | Saída das VMs privadas para instalação de pacotes e telemetria. [nat.tf](infra/vm-web-platform/nat.tf) |
 | Firewall | 5 regras | Permitir HTTP do LB/health checks, SSH do IAP e saída TCP 80/443; negar demais entradas e saídas abrangidas pelas regras. [firewall.tf](infra/vm-web-platform/firewall.tf) |
 | Computação | 1 template e 1 MIG regional com 2 VMs em 2 zonas | e2-micro, IPs privados, Debian 12, OS Login e dispositivo de vídeo; expansão manual para 3 réplicas. [vm.tf](infra/vm-web-platform/vm.tf), [mig.tf](infra/vm-web-platform/mig.tf) |
 | Discos | 1 disco de inicialização por VM | pd-standard de 10 GB no exemplo; exclusão automática com a VM. [vm.tf](infra/vm-web-platform/vm.tf) |
 | Aplicação e agente | Nginx, página HTML e Ops Agent nas VMs | Instalados pelo script de inicialização; não são serviços gerenciados separados. [templates](infra/vm-web-platform/templates) |
-| LB externo global | 1 backend service, 1 health check, 1 URL map, 1 proxy HTTP e 1 forwarding rule HTTP | Entrada HTTP na porta 80 e utilização-alvo de 80% nos backends. HTTPS adiciona proxy/regra próprios somente se habilitado e referencia certificados existentes. [load-balancers.tf](infra/vm-web-platform/load-balancers.tf) |
-| IP do frontend | 1 IPv4 global reservado | Acesso ao LB; exibido no output lb_ip. [load-balancers.tf](infra/vm-web-platform/load-balancers.tf) |
+| LB externo global | 1 backend service, 1 health check, 1 URL map, 1 proxy HTTP e 1 forwarding rule HTTP | Entrada HTTP na porta 80 e utilização-alvo de 80% nos backends. HTTPS adiciona proxy/regra próprios somente se habilitado e referencia certificados existentes. [load_balancers.tf](infra/vm-web-platform/load_balancers.tf) |
+| IP do frontend | 1 IPv4 global reservado | Acesso ao LB; exibido no output lb_ip. [load_balancers.tf](infra/vm-web-platform/load_balancers.tf) |
 | Backup | 1 política regional de snapshots vinculada aos discos | Execução diária, retenção de 7 dias, armazenamento us e início às 05:00 UTC (janela 02h–03h em Fortaleza). Os snapshots são gerados pelo agendamento, não necessariamente durante o apply. [snapshots.tf](infra/vm-web-platform/snapshots.tf) |
 
 Não são criados bucket de estado, DNS, certificados, banco de dados ou autoscaler. O estado Terraform é local. As regras de firewall não concedem, sozinhas, permissões de acesso por IAP/OS Login.

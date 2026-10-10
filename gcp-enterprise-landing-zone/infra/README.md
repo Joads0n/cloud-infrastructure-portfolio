@@ -143,14 +143,14 @@ gcp-enterprise-landing-zone/
       backend.tf                # Estado local durante todo o ciclo de vida
       project.tf                # Projeto, faturamento, labels e ciclo de vida
       apis.tf                   # Habilitação de APIs
-      service-account.tf        # Identidade de execução
+      service_account.tf        # Identidade de execução
       iam.tf                    # Concessões de telemetria
       network.tf                # VPC e sub-rede
       nat.tf                    # Roteador, NAT e IP de saída reservado
       firewall.tf               # Regras de entrada/saída
       vm.tf                     # Template, discos e inicialização
       mig.tf                    # Grupo regional e capacidade manual
-      load-balancers.tf         # Saúde, backend e frontend HTTP(S)
+      load_balancers.tf         # Saúde, backend e frontend HTTP(S)
       snapshots.tf              # Política diária de snapshots
       locals.tf, outputs.tf
       migrations.tf             # Mapeamentos do antigo módulo para a raiz
