@@ -8,6 +8,9 @@ TASKS.md
 .codex/
 profile-readme-draft.md
 github-configuration.md
+# Novas ADRs e notas de trabalho locais; arquivos já versionados não são afetados.
+**/docs/decisions/
+**/docs/local/
 .env
 .env.*
 !.env.example
