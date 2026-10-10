@@ -12,7 +12,7 @@ O usuário fornece os valores por um arquivo tfvars privado; o Terraform define 
 | --- | --- |
 | `infra/vm-web-platform/terraform.tfvars.example` | Exemplo editável dos valores; nunca é carregado automaticamente |
 | `infra/vm-web-platform/variables.tf` | Oito objetos por responsabilidade, com tipos, valores padrão e validações |
-| `infra/vm-web-platform/project.tf`, `apis.tf`, `service-account.tf`, `iam.tf` | Preparação do projeto e identidade |
+| `infra/vm-web-platform/project.tf`, `apis.tf`, `service_account.tf`, `iam.tf` | Preparação do projeto e identidade |
 | `infra/vm-web-platform/network.tf`, `vm.tf` e demais arquivos por responsabilidade | Implementação direta dos recursos com os valores fornecidos |
 
 Um único diretório raiz declara oito objetos independentes, e os arquivos de recursos os consomem diretamente; não há interface de módulo a sincronizar. O antigo settings.tf foi incorporado ao contrato único em variables.tf. Os valores padrão reproduzem o case fictício por conveniência; não são valores literais embutidos nos blocos de recursos.

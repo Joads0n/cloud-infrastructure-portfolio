@@ -24,11 +24,11 @@ class ConfigurationContractTests(unittest.TestCase):
     def test_root_passes_configuration_and_region(self):
         source = (ROOT / "providers.tf").read_text()
         self.assertEqual(source.count("region  = var.deployment_settings.region"), 2)
-        source = (ROOT / "service-account.tf").read_text()
+        source = (ROOT / "service_account.tf").read_text()
         self.assertIn("account_id   = var.identity_settings.runtime_service_account_id", source)
 
     def test_resource_logic_has_no_case_specific_deployment_literals(self):
-        for name in ("network.tf", "nat.tf", "firewall.tf", "vm.tf", "mig.tf", "load-balancers.tf", "snapshots.tf"):
+        for name in ("network.tf", "nat.tf", "firewall.tf", "vm.tf", "mig.tf", "load_balancers.tf", "snapshots.tf"):
             source = (ROOT / name).read_text()
             for literal in ('"crl-', '"us-central1"', '"10.80.10.0/24"',
                             '"app.cedar-route.example"', '"e2-micro"', '"pd-standard"'):
@@ -51,7 +51,10 @@ class ConfigurationContractTests(unittest.TestCase):
         self.assertNotIn("-var='backend_count=", (ROOT.parent / "README.md").read_text())
 
     def test_resource_groups_have_separate_files(self):
-        for name in ("network", "nat", "firewall", "vm", "mig", "load-balancers", "snapshots"):
+        for path in ROOT.glob("*.tf"):
+            with self.subTest(file=path.name):
+                self.assertRegex(path.name, r"^[a-z][a-z0-9_]*\.tf$")
+        for name in ("network", "nat", "firewall", "vm", "mig", "load_balancers", "snapshots"):
             self.assertIn('resource "', (ROOT / f"{name}.tf").read_text())
         source = "\n".join(p.read_text() for p in ROOT.glob("*.tf"))
         self.assertNotRegex(source, r'(?m)^module\s+"')

@@ -30,6 +30,8 @@ Use English for repository documents, filenames, commits, issues, and pull reque
 
 ### Terraform module selection
 
+Use snake_case for Terraform `.tf` filenames: lowercase words separated by underscores, such as `load_balancers.tf` and `service_account.tf`. This convention applies to filenames, not cloud resource names or directory names.
+
 Use direct Google provider resources and local modules only when they provide a clear organizational or reuse benefit. There is no preference or requirement for Google-maintained remote modules. If a remote module is justified later, review and pin its version explicitly; provider locks do not lock module versions. Preserve unique resource ownership, pinned providers, least privilege, and protected state. Review migrations separately for applied roots.
 
 The owner executes all Terraform plans and applies, including destruction. The assistant may edit, format, statically validate, and review sanitized results. Do not run mock suites containing `command = plan` without renewed direction.
