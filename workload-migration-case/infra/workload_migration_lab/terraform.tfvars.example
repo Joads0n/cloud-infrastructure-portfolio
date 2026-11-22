@@ -1,0 +1,27 @@
+platform_settings = {
+  project_id = "prj-maple-migration-lab"
+  region     = "us-central1"
+  zone       = "us-central1-a"
+  labels = {
+    environment = "lab"
+    owner       = "portfolio"
+  }
+}
+
+network_settings = {
+  source_vpc_name    = "maple-legacy-source-vpc"
+  target_vpc_name    = "maple-migration-target-vpc"
+  source_subnet_cidr = "10.80.10.0/24"
+  target_subnet_cidr = "10.81.10.0/24"
+  source_subnet_name = "maple-legacy-source"
+  target_subnet_name = "maple-migration-target"
+  dns_zone_name      = "internal.maple.example."
+  dns_record_name    = "orders.internal.maple.example."
+}
+
+migration_settings = {
+  active_backend          = "source"
+  target_size             = 2
+  artifact_bucket_name    = "maple-migration-artifacts-prj-maple-migration-lab"
+  artifact_retention_days = 7
+}
