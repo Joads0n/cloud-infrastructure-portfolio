@@ -1,0 +1,62 @@
+platform_settings = {
+  bootstrap_project_id = "prj-vertice-network-admin"
+  billing_project_id   = "prj-vertice-network-admin"
+  region               = "us-central1"
+  zones                = ["us-central1-a", "us-central1-b"]
+  labels = {
+    environment = "lab"
+    owner       = "portfolio"
+  }
+}
+
+organization_settings = {
+  organization_id = "123456789012"
+  folder_id       = ""
+  create_folder   = true
+  folder_name     = "vertice-network-lab"
+}
+
+project_settings = {
+  create_projects       = true
+  apps_project_id       = "prj-vertice-apps-prd"
+  services_project_id   = "prj-vertice-services-prd"
+  apps_project_name     = "Vertice Aplicacoes"
+  services_project_name = "Vertice Servicos Internos"
+  billing_account_id    = "000000-000000-000000"
+  labels = {
+    portfolio_case = "secure-network-architecture"
+  }
+}
+
+network_settings = {
+  apps_vpc_name         = "vertice-apps-vpc"
+  services_vpc_name     = "vertice-services-vpc"
+  apps_application_cidr = "10.60.10.0/24"
+  apps_test_cidr        = "10.60.20.0/24"
+  services_cidr         = "10.60.30.0/24"
+  dns_zone_name         = "internal.vertice.example."
+  service_record_name   = "orders.internal.vertice.example."
+}
+
+compute_settings = {
+  machine_type      = "f1-micro"
+  image             = "projects/debian-cloud/global/images/family/debian-12"
+  application_name  = "vertice-app"
+  test_name         = "vertice-test"
+  service_name      = "vertice-orders"
+  boot_disk_size_gb = 10
+}
+
+ngfw_settings = {
+  enabled            = true
+  endpoint_name      = "vertice-ngfw-endpoint"
+  endpoint_zone      = "us-central1-a"
+  profile_name       = "vertice-threat-prevention"
+  profile_group_name = "vertice-threat-prevention-group"
+  enable_logging     = true
+}
+
+test_settings = {
+  enabled = true
+  port    = 80
+}
