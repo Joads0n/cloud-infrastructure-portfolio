@@ -9,14 +9,14 @@ Este repositório é um catálogo de estudos de caso de infraestrutura em nuvem,
 | [Catálogo de infraestrutura](cloud-infrastructure-portfolio/README.md) | Roadmap, padrões comuns e índice dos cases | Disponível |
 | [GCP Enterprise Foundation](gcp-enterprise-foundation/README.md) | Hierarquia organizacional, limites administrativos e guardrails | Planejado |
 | [GCP Enterprise Landing Zone](gcp-enterprise-landing-zone/README.md) | Projeto de produção, LB externo, réplicas Nginx privadas, telemetria e snapshots | Configuração pronta para revisão; testes anteriores de desenvolvimento foram confirmados pelo operador |
-| [Terraform Enterprise Infrastructure](terraform-enterprise-infrastructure/README.md) | Engenharia de IaC e desenho de módulos | Planejado |
-| [GCP Secure Network Architecture](gcp-secure-network-architecture/README.md) | Endereçamento, segmentação, DNS, políticas de firewall, NGFW e diagnóstico | Escopo e arquitetura propostos |
+| [Terraform Enterprise Infrastructure](terraform-enterprise-infrastructure/README.md) | Rede privada, Cloud SQL, segredos, KMS, artefatos e fundação de plataforma IaC | Implementação Terraform validada; produto TFE não implantado |
+| [GCP Secure Network Architecture](gcp-secure-network-architecture/README.md) | Endereçamento, segmentação, DNS, políticas de firewall, NGFW e diagnóstico | Implementação Terraform validada; validação GCP pendente |
 | [Cloud Security Architecture](cloud-security-architecture/README.md) | Identidade de workloads, proteção de dados, hardening e detecção | Planejado |
 | [Cloud Governance Framework](cloud-governance-framework/README.md) | Padrões, verificações de políticas, exceções e evidências | Planejado |
 | [Cloud FinOps Lab](cloud-finops-lab/README.md) | Alocação, orçamento, previsão e rightsizing | Planejado |
-| [Hybrid Cloud Networking](hybrid-cloud-networking/README.md) | VPN, troca de rotas, conectividade híbrida e diagnóstico de falhas | Planejado |
+| [Hybrid Cloud Networking](hybrid-cloud-networking/README.md) | HA VPN, BGP, troca de rotas, conectividade híbrida e diagnóstico de falhas | Implementação Terraform validada; peer simulado |
 | [Disaster Recovery](disaster-recovery/README.md) | Backup, restauração, integridade e objetivos de recuperação | Planejado |
-| [Workload Migration Case](workload-migration-case/README.md) | Avaliação, cutover, rollback e recuperação | Planejado |
+| [Workload Migration Case](workload-migration-case/README.md) | Avaliação, blue/green, cutover, rollback e evidências de migração | Implementação Terraform validada; sem migração real |
 
 ## Como o repositório está organizado
 
