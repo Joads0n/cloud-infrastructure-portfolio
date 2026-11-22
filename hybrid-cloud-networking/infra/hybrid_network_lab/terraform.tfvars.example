@@ -1,0 +1,37 @@
+platform_settings = {
+  project_id = "prj-orion-hybrid-lab"
+  region     = "us-central1"
+  zone       = "us-central1-a"
+  labels = {
+    environment = "lab"
+    owner       = "portfolio"
+  }
+}
+
+network_settings = {
+  cloud_vpc_name       = "orion-cloud-vpc"
+  peer_vpc_name        = "orion-peer-fixture-vpc"
+  cloud_subnet_cidr    = "10.240.10.0/24"
+  peer_subnet_cidr     = "10.240.20.0/24"
+  peer_advertised_cidr = "10.240.20.0/24"
+}
+
+vpn_settings = {
+  cloud_asn                 = 64514
+  peer_asn                  = 64520
+  peer_external_gateway     = "orion-simulated-peer"
+  peer_ip_0                 = "198.51.100.10"
+  peer_ip_1                 = "198.51.100.11"
+  shared_secret             = "REPLACE_WITH_PRIVATE_SHARED_SECRET"
+  cloud_bgp_ip_0            = "169.254.100.1"
+  peer_bgp_ip_0             = "169.254.100.2"
+  cloud_bgp_ip_1            = "169.254.101.1"
+  peer_bgp_ip_1             = "169.254.101.2"
+}
+
+compute_settings = {
+  enabled      = true
+  name         = "orion-cloud-service"
+  machine_type = "e2-micro"
+  image        = "projects/debian-cloud/global/images/family/debian-12"
+}
