@@ -11,7 +11,7 @@ ROOT = CASE / "infra" / "workload_migration_lab"
 class WorkloadMigrationContractTests(unittest.TestCase):
     def test_root_has_project_m2vm_network_and_lb_files(self):
         expected = {
-            "versions.tf", "providers.tf", "variables.tf", "locals.tf", "project.tf",
+            "versions.tf", "providers.tf", "variables.tf", "locals.tf", "apis.tf",
             "network.tf", "m2vm.tf", "compute.tf", "load_balancer.tf", "dns.tf",
             "firewall.tf", "outputs.tf", "terraform.tfvars.example",
         }
@@ -27,10 +27,12 @@ class WorkloadMigrationContractTests(unittest.TestCase):
         self.assertIn("target_instance_self_links", variables)
 
     def test_project_apis_and_m2vm_contract_are_explicit(self):
-        project = (ROOT / "project.tf").read_text()
+        apis = (ROOT / "apis.tf").read_text()
         m2vm = (ROOT / "m2vm.tf").read_text()
         locals_text = (ROOT / "locals.tf").read_text()
-        self.assertIn('resource "google_project" "destination"', project)
+        self.assertFalse((ROOT / "project.tf").exists())
+        self.assertNotIn('resource "google_project"', "\n".join(path.read_text() for path in ROOT.glob("*.tf")))
+        self.assertIn('resource "google_project_service" "migration"', apis)
         self.assertIn('"vmmigration.googleapis.com"', locals_text)
         self.assertIn("m2vm_aws_source_contract", m2vm)
         self.assertIn("aws_region", m2vm)
@@ -57,13 +59,11 @@ class WorkloadMigrationContractTests(unittest.TestCase):
 
     def test_example_contains_no_credentials_or_real_aws_data(self):
         example = (ROOT / "terraform.tfvars.example").read_text()
-        self.assertIn("organization_id    = null", example)
-        self.assertIn("folder_id          = null", example)
-        self.assertIn("billing_account_id =", example)
+        self.assertIn("project_id =", example)
+        self.assertIn("não cria projeto bootstrap", example)
         self.assertIn("resource_prefix =", example)
         self.assertIn("environment     =", example)
         self.assertIn("region          =", example)
-        self.assertIn("labels = {", example)
         self.assertIn("sg-fictional-m2vm-source", example)
         self.assertNotIn("aws_access_key", example.lower())
         self.assertNotIn("secret_access_key", example.lower())
