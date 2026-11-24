@@ -1,13 +1,14 @@
-# Somente valores fictícios. Copie para um arquivo privado e substitua o projeto bootstrap e o billing.
+# Somente valores fictícios. Copie para um arquivo privado e substitua os IDs do ambiente avaliador.
 # Labels de projeto não devem repetir as reservadas environment e managed_by.
 # A zona precisa pertencer à região definida em deployment_settings.
 
 # Projeto, faturamento, hierarquia e labels do projeto
 project_settings = {
-  create_project     = true
+  # O projeto será criado manualmente pelo avaliador; o Terraform não o cria.
+  create_project     = false
   project_id         = "fictional-m2vm-lab"
   project_name       = "Maple Harbor VM Migration Lab"
-  billing_account_id = "000000-000000-000000"
+  billing_account_id = null
   organization_id    = null
   folder_id          = null
   labels = {
