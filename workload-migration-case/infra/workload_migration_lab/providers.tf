@@ -1,5 +1,12 @@
 provider "google" {
-  project               = var.platform_settings.project_id
+  project               = var.project_settings.project_id
+  region                = var.platform_settings.region
+  user_project_override = true
+}
+
+provider "google" {
+  alias                 = "bootstrap"
+  project               = var.platform_settings.bootstrap_project_id
   region                = var.platform_settings.region
   user_project_override = true
 }

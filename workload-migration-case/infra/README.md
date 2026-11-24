@@ -1,37 +1,56 @@
-# Workload migration lab — Terraform operations
+# Laboratório Terraform — migração de VMs AWS para GCP
 
-This root creates a synthetic source/target migration exercise. It does not handle real customer data or automatically migrate a database.
+Este root provisiona somente o lado GCP de uma migração de duas VMs. A origem AWS, o ALB AWS, o NAT Gateway AWS e as VMs AWS são fictícios neste exercício e não são gerenciados pelo Terraform.
 
-## Prerequisites
+## Pré-requisitos
 
-- Terraform 1.16.5 and the locked Google provider.
-- An existing operator-owned GCP project with Compute, DNS, Storage, IAM, Service Usage, and Network permissions.
-- A private variable file based on `terraform.tfvars.example`.
-- Synthetic validation data and a defined cutover/rollback time budget.
-- A reviewed cost window for two VPCs, a MIG, load balancer, bucket, and logs.
+- Terraform 1.16.5 e o provider Google bloqueado em `8.5.0`.
+- `gcloud auth application-default login` concluído.
+- Projeto bootstrap com permissão para criar projeto e associar billing account, quando `create_project = true`.
+- Billing account e folder informados em um arquivo privado.
+- Uma conta AWS real somente para a fase de registro e replicação do M2VM; ela não é necessária para os testes estáticos ou para preparar o destino GCP.
 
-## Local checks
+## Verificações locais
 
 ```sh
-umask 077
 terraform -chdir=workload-migration-case/infra/workload_migration_lab init -lockfile=readonly
 terraform -chdir=workload-migration-case/infra/workload_migration_lab fmt -check -recursive
 terraform -chdir=workload-migration-case/infra/workload_migration_lab validate
 python3 -m unittest discover -s workload-migration-case/tests -v
 ```
 
-These commands do not create source or target resources. Live cutover and rollback require an approved plan and synthetic data only.
+Esses comandos não criam recursos. O `plan` também não deve receber access keys AWS; o contrato M2VM usa somente metadados fictícios.
 
-## Private inputs and lifecycle
+## Preparação do arquivo privado
 
-Copy the example to `.private/maple-migration.tfvars`. Select `active_backend = "source"` for baseline validation. Change it to `target` only in a reviewed plan, record DNS and HTTP observations, and return it to `source` to measure rollback.
+```sh
+umask 077
+mkdir -p .private
+cp workload-migration-case/infra/workload_migration_lab/terraform.tfvars.example .private/maple-m2vm.tfvars
+```
+
+Edite o arquivo privado e informe `bootstrap_project_id`, `project_id`, billing account e folder. Mantenha `target_instance_self_links = []` até o M2VM criar as duas VMs GCP.
+
+## Plan e apply do lado GCP
 
 ```sh
 terraform -chdir=workload-migration-case/infra/workload_migration_lab plan \
-  -input=false -var-file="$PWD/.private/maple-migration.tfvars" \
-  -out="$PWD/.private/maple-migration.tfplan"
+  -input=false \
+  -var-file="$PWD/.private/maple-m2vm.tfvars" \
+  -out="$PWD/.private/maple-m2vm.tfplan"
+
 terraform -chdir=workload-migration-case/infra/workload_migration_lab apply \
-  "$PWD/.private/maple-migration.tfplan"
+  "$PWD/.private/maple-m2vm.tfplan"
 ```
 
-Destroy with the same state and variables after collecting sanitized evidence. Check bucket object versions separately; `force_destroy=false` is intentional so retained artifacts are not silently removed.
+O primeiro apply cria o destino GCP e o Load Balancer sem backends. Depois da criação das duas VMs pelo M2VM, informe seus self-links no arquivo privado, execute novo `plan/apply` e valide os health checks.
+
+## Cutover e rollback
+
+Para cutover, altere `active_backend = "gcp"`, gere um novo plan e aplique após a aprovação. Para rollback, altere para `active_backend = "aws"`. O registro DNS aponta para o VIP GCP ou para o VIP AWS fictício `198.51.100.20`.
+
+O M2VM exige uma origem AWS real e credenciais adequadas no momento do cadastro. Elas devem ser fornecidas somente pelo fluxo oficial do serviço, de preferência com credenciais temporárias, e nunca em `.tfvars`, estado Terraform ou Git.
+
+## Descomissionamento
+
+Após coletar evidências, remova primeiro o registro DNS, o Load Balancer e os demais recursos GCP com o mesmo estado Terraform. Revise operações e VMs do M2VM separadamente. A destruição do projeto pode ser usada somente quando o projeto tiver sido criado por este case e a retenção de evidências tiver terminado.

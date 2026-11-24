@@ -1,26 +1,16 @@
 resource "google_dns_managed_zone" "migration" {
-  name        = "maple-migration-internal"
-  dns_name    = var.network_settings.dns_zone_name
-  description = "Private DNS switch for the synthetic migration exercise."
-  visibility  = "private"
-
-  private_visibility_config {
-    networks {
-      network_url = google_compute_network.source.id
-    }
-
-    networks {
-      network_url = google_compute_network.target.id
-    }
-  }
+  name        = var.network_settings.dns_zone_name
+  dns_name    = var.network_settings.dns_name
+  description = "Fictional DNS zone used to exercise AWS-to-GCP VM cutover and rollback."
+  visibility  = "public"
 }
 
 resource "google_dns_record_set" "active_backend" {
   managed_zone = google_dns_managed_zone.migration.name
-  name         = var.network_settings.dns_record_name
+  name         = var.network_settings.record_name
   type         = "A"
-  ttl          = 30
+  ttl          = var.cutover_settings.ttl
   rrdatas = [
-    var.migration_settings.active_backend == "target" ? google_compute_forwarding_rule.target.ip_address : google_compute_instance.source.network_interface[0].network_ip
+    var.cutover_settings.active_backend == "gcp" ? google_compute_global_address.target.address : var.cutover_settings.fictional_source_ip
   ]
 }

@@ -1,4 +1,4 @@
-"""Static contract tests for the synthetic workload migration case."""
+"""Static contract tests for the AWS-to-GCP VM migration case."""
 
 from pathlib import Path
 import unittest
@@ -9,48 +9,57 @@ ROOT = CASE / "infra" / "workload_migration_lab"
 
 
 class WorkloadMigrationContractTests(unittest.TestCase):
-    def test_root_has_migration_responsibility_files(self):
+    def test_root_has_project_m2vm_network_and_lb_files(self):
         expected = {
-            "versions.tf", "providers.tf", "variables.tf", "locals.tf", "apis.tf",
-            "network.tf", "peering.tf", "compute.tf", "load_balancer.tf", "dns.tf",
-            "artifacts.tf", "firewall.tf", "outputs.tf", "terraform.tfvars.example",
+            "versions.tf", "providers.tf", "variables.tf", "locals.tf", "project.tf",
+            "network.tf", "m2vm.tf", "compute.tf", "load_balancer.tf", "dns.tf",
+            "firewall.tf", "outputs.tf", "terraform.tfvars.example",
         }
         self.assertTrue(expected.issubset({path.name for path in ROOT.iterdir()}))
 
-    def test_source_target_and_peering_are_explicit(self):
-        network = (ROOT / "network.tf").read_text()
-        peering = (ROOT / "peering.tf").read_text()
+    def test_case_is_gcp_only_and_does_not_provision_vms(self):
+        versions = (ROOT / "versions.tf").read_text()
         compute = (ROOT / "compute.tf").read_text()
-        self.assertGreaterEqual(network.count('resource "google_compute_network"'), 2)
-        self.assertEqual(peering.count('resource "google_compute_network_peering"'), 2)
-        self.assertIn('resource "google_compute_instance" "source"', compute)
-        self.assertIn('resource "google_compute_region_instance_group_manager" "target"', compute)
-        self.assertNotIn("access_config", compute)
+        variables = (ROOT / "variables.tf").read_text()
+        self.assertIn('source  = "hashicorp/google"', versions)
+        self.assertNotIn('source  = "hashicorp/aws"', versions)
+        self.assertNotIn('resource "google_compute_instance"', compute)
+        self.assertIn("target_instance_self_links", variables)
 
-    def test_cutover_and_rollback_controls_exist(self):
+    def test_project_apis_and_m2vm_contract_are_explicit(self):
+        project = (ROOT / "project.tf").read_text()
+        m2vm = (ROOT / "m2vm.tf").read_text()
+        locals_text = (ROOT / "locals.tf").read_text()
+        self.assertIn('resource "google_project" "destination"', project)
+        self.assertIn('"vmmigration.googleapis.com"', locals_text)
+        self.assertIn("m2vm_aws_source_contract", m2vm)
+        self.assertIn("aws_region", m2vm)
+
+    def test_private_network_nat_firewall_and_global_lb_exist(self):
+        network = (ROOT / "network.tf").read_text()
+        firewall = (ROOT / "firewall.tf").read_text()
+        load_balancer = (ROOT / "load_balancer.tf").read_text()
+        compute = (ROOT / "compute.tf").read_text()
+        self.assertIn('resource "google_compute_router_nat" "target"', network)
+        self.assertIn('source_ranges = ["35.191.0.0/16", "130.211.0.0/22"]', firewall)
+        self.assertIn('resource "google_compute_global_forwarding_rule" "target"', load_balancer)
+        self.assertIn('load_balancing_scheme = "EXTERNAL_MANAGED"', load_balancer)
+        self.assertIn('resource "google_compute_instance_group" "target"', compute)
+
+    def test_cutover_and_rollback_are_explicit(self):
         variables = (ROOT / "variables.tf").read_text()
         dns = (ROOT / "dns.tf").read_text()
-        self.assertIn("active_backend", variables)
-        self.assertIn('contains(["source", "target"]', variables)
-        self.assertIn('active_backend == "target"', dns)
-        self.assertIn("google_dns_record_set", dns)
-
-    def test_target_traffic_and_artifact_controls_exist(self):
-        load_balancer = (ROOT / "load_balancer.tf").read_text()
-        artifacts = (ROOT / "artifacts.tf").read_text()
-        firewall = (ROOT / "firewall.tf").read_text()
-        self.assertIn("google_compute_region_health_check", load_balancer)
-        self.assertIn("google_compute_forwarding_rule", load_balancer)
-        self.assertIn("uniform_bucket_level_access = true", artifacts)
-        self.assertIn('public_access_prevention    = "enforced"', artifacts)
-        self.assertIn("versioning", artifacts)
-        self.assertIn("source_subnet_cidr", firewall)
-
-    def test_example_is_synthetic_and_safe(self):
         example = (ROOT / "terraform.tfvars.example").read_text()
-        self.assertIn("prj-maple-migration-lab", example)
-        self.assertIn("10.80.10.0/24", example)
-        self.assertIn("active_backend          = \"source\"", example)
+        self.assertIn('contains(["aws", "gcp"]', variables)
+        self.assertIn('active_backend == "gcp"', dns)
+        self.assertIn('active_backend      = "aws"', example)
+        self.assertIn('fictional_source_ip', example)
+
+    def test_example_contains_no_credentials_or_real_aws_data(self):
+        example = (ROOT / "terraform.tfvars.example").read_text()
+        self.assertIn("sg-fictional-m2vm-source", example)
+        self.assertNotIn("aws_access_key", example.lower())
+        self.assertNotIn("secret_access_key", example.lower())
         self.assertNotIn("BEGIN PRIVATE KEY", example)
 
 
