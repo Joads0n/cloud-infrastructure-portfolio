@@ -8,4 +8,6 @@ resource "google_compute_instance_group" "target" {
     name = "http"
     port = 80
   }
+
+  depends_on = [google_project_service.migration]
 }

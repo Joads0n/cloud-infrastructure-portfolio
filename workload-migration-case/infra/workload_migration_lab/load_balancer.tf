@@ -1,5 +1,7 @@
 resource "google_compute_global_address" "target" {
   name = "${local.prefix}-global-ip"
+
+  depends_on = [google_project_service.migration]
 }
 
 resource "google_compute_health_check" "target" {
@@ -9,6 +11,8 @@ resource "google_compute_health_check" "target" {
     port         = 80
     request_path = "/"
   }
+
+  depends_on = [google_project_service.migration]
 }
 
 resource "google_compute_backend_service" "target" {
@@ -23,6 +27,8 @@ resource "google_compute_backend_service" "target" {
     balancing_mode  = "UTILIZATION"
     capacity_scaler = 1.0
   }
+
+  depends_on = [google_project_service.migration]
 }
 
 resource "google_compute_url_map" "target" {

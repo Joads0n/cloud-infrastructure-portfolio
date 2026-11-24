@@ -93,7 +93,7 @@ variable "network_settings" {
   }
 
   validation {
-    condition     = endswith(coalesce(var.network_settings.dns_name, ""), ".") && endswith(coalesce(var.network_settings.record_name, ""), ".")
+    condition     = try(endswith(var.network_settings.dns_name, "."), true) && try(endswith(var.network_settings.record_name, "."), true)
     error_message = "dns_name e record_name devem ser nomes DNS completos terminados em ponto."
   }
 }
@@ -105,11 +105,24 @@ variable "m2vm_settings" {
     aws_organization           = optional(string, "Maple Harbor Retail AWS organization")
     aws_account_alias          = optional(string, "maple-harbor-migration")
     aws_region                 = optional(string, "us-east-1")
+    source_vm_count            = optional(number, 2)
+    source_has_load_balancer   = optional(bool, true)
+    source_has_nat_egress      = optional(bool, true)
     source_vm_tag_key          = optional(string, "migrate-to-gcp")
     source_vm_tag_value        = optional(string, "true")
     source_security_group_ids  = optional(list(string), ["sg-fictional-m2vm-source"])
     target_instance_self_links = optional(list(string), [])
   })
+
+  validation {
+    condition     = var.m2vm_settings.source_vm_count == 2
+    error_message = "Este case é restrito à migração de exatamente duas VMs AWS."
+  }
+
+  validation {
+    condition     = var.m2vm_settings.source_has_load_balancer && var.m2vm_settings.source_has_nat_egress
+    error_message = "A origem AWS do case deve possuir Load Balancer e NAT egress."
+  }
 
   validation {
     condition     = length(var.m2vm_settings.target_instance_self_links) == 0 || length(var.m2vm_settings.target_instance_self_links) == 2

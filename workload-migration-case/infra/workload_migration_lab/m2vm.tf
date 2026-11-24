@@ -10,6 +10,9 @@ resource "terraform_data" "m2vm_aws_source_contract" {
     aws_organization       = var.m2vm_settings.aws_organization
     aws_account_alias      = var.m2vm_settings.aws_account_alias
     aws_region             = var.m2vm_settings.aws_region
+    source_vm_count        = var.m2vm_settings.source_vm_count
+    source_load_balancer   = var.m2vm_settings.source_has_load_balancer
+    source_nat_egress      = var.m2vm_settings.source_has_nat_egress
     source_vm_tag_key      = var.m2vm_settings.source_vm_tag_key
     source_vm_tag_value    = var.m2vm_settings.source_vm_tag_value
     security_group_filters = join(",", var.m2vm_settings.source_security_group_ids)
