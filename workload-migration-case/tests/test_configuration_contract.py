@@ -57,6 +57,13 @@ class WorkloadMigrationContractTests(unittest.TestCase):
 
     def test_example_contains_no_credentials_or_real_aws_data(self):
         example = (ROOT / "terraform.tfvars.example").read_text()
+        self.assertIn("organization_id    = null", example)
+        self.assertIn("folder_id          = null", example)
+        self.assertIn("billing_account_id =", example)
+        self.assertIn("resource_prefix =", example)
+        self.assertIn("environment     =", example)
+        self.assertIn("region          =", example)
+        self.assertIn("labels = {", example)
         self.assertIn("sg-fictional-m2vm-source", example)
         self.assertNotIn("aws_access_key", example.lower())
         self.assertNotIn("secret_access_key", example.lower())

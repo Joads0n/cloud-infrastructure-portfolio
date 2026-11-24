@@ -1,9 +1,9 @@
 resource "google_compute_global_address" "target" {
-  name = "maple-m2vm-global-ip"
+  name = "${local.prefix}-global-ip"
 }
 
 resource "google_compute_health_check" "target" {
-  name = "maple-m2vm-health-check"
+  name = "${local.prefix}-health-check"
 
   http_health_check {
     port         = 80
@@ -12,7 +12,7 @@ resource "google_compute_health_check" "target" {
 }
 
 resource "google_compute_backend_service" "target" {
-  name                  = "maple-m2vm-global-backend"
+  name                  = "${local.prefix}-global-backend"
   protocol              = "HTTP"
   port_name             = "http"
   load_balancing_scheme = "EXTERNAL_MANAGED"
@@ -26,17 +26,17 @@ resource "google_compute_backend_service" "target" {
 }
 
 resource "google_compute_url_map" "target" {
-  name            = "maple-m2vm-url-map"
+  name            = "${local.prefix}-url-map"
   default_service = google_compute_backend_service.target.id
 }
 
 resource "google_compute_target_http_proxy" "target" {
-  name    = "maple-m2vm-http-proxy"
+  name    = "${local.prefix}-http-proxy"
   url_map = google_compute_url_map.target.id
 }
 
 resource "google_compute_global_forwarding_rule" "target" {
-  name                  = "maple-m2vm-http-forwarding-rule"
+  name                  = "${local.prefix}-http-forwarding-rule"
   target                = google_compute_target_http_proxy.target.id
   ip_address            = google_compute_global_address.target.id
   port_range            = "80"

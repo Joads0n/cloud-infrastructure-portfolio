@@ -5,9 +5,11 @@ resource "google_project" "destination" {
   project_id          = var.project_settings.project_id
   name                = var.project_settings.project_name
   billing_account     = var.project_settings.billing_account_id
-  folder_id           = var.project_settings.folder_id != "" ? var.project_settings.folder_id : null
+  org_id              = var.project_settings.organization_id
+  folder_id           = var.project_settings.folder_id
   auto_create_network = false
-  labels              = local.common_labels
+  deletion_policy     = "DELETE"
+  labels              = local.project_labels
 }
 
 resource "google_project_service" "migration" {

@@ -1,5 +1,5 @@
 resource "google_compute_network" "target" {
-  name                    = var.network_settings.vpc_name
+  name                    = local.network_name
   auto_create_subnetworks = false
   routing_mode            = "REGIONAL"
 
@@ -7,8 +7,8 @@ resource "google_compute_network" "target" {
 }
 
 resource "google_compute_subnetwork" "target" {
-  name                     = var.network_settings.subnet_name
-  region                   = var.platform_settings.region
+  name                     = local.subnet_name
+  region                   = local.region
   network                  = google_compute_network.target.id
   ip_cidr_range            = var.network_settings.subnet_cidr
   private_ip_google_access = true
@@ -21,15 +21,15 @@ resource "google_compute_subnetwork" "target" {
 }
 
 resource "google_compute_router" "target" {
-  name    = var.network_settings.router_name
-  region  = var.platform_settings.region
+  name    = local.router_name
+  region  = local.region
   network = google_compute_network.target.id
 }
 
 resource "google_compute_router_nat" "target" {
-  name                               = var.network_settings.nat_name
+  name                               = local.nat_name
   router                             = google_compute_router.target.name
-  region                             = var.platform_settings.region
+  region                             = local.region
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "LIST_OF_SUBNETWORKS"
 

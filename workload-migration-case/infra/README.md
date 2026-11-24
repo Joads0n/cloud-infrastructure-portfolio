@@ -29,7 +29,7 @@ mkdir -p .private
 cp workload-migration-case/infra/workload_migration_lab/terraform.tfvars.example .private/maple-m2vm.tfvars
 ```
 
-Edite o arquivo privado e informe `bootstrap_project_id`, `project_id`, billing account e folder. Mantenha `target_instance_self_links = []` até o M2VM criar as duas VMs GCP.
+Edite o arquivo privado e informe `bootstrap_project_id`, `project_id`, billing account e folder. Mantenha os labels de projeto sem as chaves reservadas `environment` e `managed_by`. Revise também `environment`, `resource_prefix`, `region` e `zone`; a zona deve pertencer à região. Mantenha `target_instance_self_links = []` até o M2VM criar as duas VMs GCP.
 
 ## Plan e apply do lado GCP
 

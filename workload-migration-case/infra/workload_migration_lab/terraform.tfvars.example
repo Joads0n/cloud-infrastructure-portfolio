@@ -1,27 +1,43 @@
-platform_settings = {
-  bootstrap_project_id = "prj-maple-bootstrap"
-  region               = "us-central1"
-  zone                 = "us-central1-a"
+# Somente valores fictícios. Copie para um arquivo privado e substitua o projeto bootstrap e o billing.
+# Labels de projeto não devem repetir as reservadas environment e managed_by.
+# A zona precisa pertencer à região definida em deployment_settings.
+
+# Projeto, faturamento, hierarquia e labels do projeto
+project_settings = {
+  create_project     = true
+  project_id         = "fictional-m2vm-lab"
+  project_name       = "Maple Harbor VM Migration Lab"
+  billing_account_id = "000000-000000-000000"
+  organization_id    = null
+  folder_id          = null
   labels = {
-    environment = "lab"
-    owner       = "cloud-platform"
+    owner          = "platform"
+    cost_center    = "cloud-lab"
+    scope          = "vm-migration"
+    migration_type = "aws-to-gcp"
   }
 }
 
-project_settings = {
-  project_id         = "prj-maple-m2vm-lab"
-  project_name       = "Laboratório de migração de VMs Maple Harbor"
-  billing_account_id = "REPLACE_WITH_BILLING_ACCOUNT_ID"
-  folder_id          = "REPLACE_WITH_FOLDER_ID_OR_EMPTY"
-  create_project     = true
+# Ambiente, prefixo, região e zona dos recursos
+deployment_settings = {
+  environment     = "lab"
+  resource_prefix = "mhr-m2vm-lab"
+  region          = "us-central1"
+  zone            = "us-central1-a"
 }
 
+# Projeto usado para criar o projeto de destino
+platform_settings = {
+  bootstrap_project_id = "fictional-bootstrap"
+}
+
+# Rede; nomes podem ser omitidos para usar o prefixo do ambiente
 network_settings = {
   subnet_cidr = "10.82.10.0/24"
 }
 
 m2vm_settings = {
-  source_name               = "maple-aws-source"
+  source_name               = "mhr-m2vm-aws-source"
   aws_organization          = "Maple Harbor Retail AWS organization"
   aws_account_alias         = "maple-harbor-migration"
   aws_region                = "us-east-1"

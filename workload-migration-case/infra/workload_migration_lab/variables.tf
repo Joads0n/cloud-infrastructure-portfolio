@@ -2,10 +2,8 @@ variable "platform_settings" {
   description = "Projeto de bootstrap e configurações regionais usadas pelo laboratório de migração."
   type = object({
     bootstrap_project_id = string
-    region               = string
-    zone                 = string
-    labels               = map(string)
   })
+  nullable = false
 }
 
 variable "project_settings" {
@@ -13,31 +11,88 @@ variable "project_settings" {
   type = object({
     project_id         = string
     project_name       = optional(string, "Maple Harbor VM migration lab")
-    billing_account_id = optional(string, "")
-    folder_id          = optional(string, "")
+    billing_account_id = optional(string)
+    organization_id    = optional(string)
+    folder_id          = optional(string)
+    labels             = optional(map(string), {})
     create_project     = optional(bool, true)
   })
+  nullable = false
 
   validation {
-    condition = !var.project_settings.create_project || (
-      var.project_settings.billing_account_id != "" &&
-      can(regex("^[0-9A-Fa-f-]{6,}$", var.project_settings.billing_account_id))
-    )
-    error_message = "O ID da conta de faturamento é obrigatório quando create_project é true."
+    condition     = can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.project_settings.project_id))
+    error_message = "Informe um ID de projeto GCP válido."
+  }
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9 '!-]{4,30}$", var.project_settings.project_name))
+    error_message = "Use um nome de projeto GCP com 4 a 30 caracteres."
+  }
+
+  validation {
+    condition     = var.project_settings.create_project ? can(regex("^[A-Fa-f0-9]{6}-[A-Fa-f0-9]{6}-[A-Fa-f0-9]{6}$", var.project_settings.billing_account_id)) : var.project_settings.billing_account_id == null
+    error_message = "A criação exige um ID de conta de faturamento no formato XXXXXX-XXXXXX-XXXXXX; o modo de projeto existente exige null."
+  }
+
+  validation {
+    condition     = var.project_settings.organization_id == null ? true : var.project_settings.create_project && var.project_settings.folder_id == null && can(regex("^[0-9]+$", var.project_settings.organization_id))
+    error_message = "Informe um ID numérico de organização somente para criação e sem pasta."
+  }
+
+  validation {
+    condition     = var.project_settings.folder_id == null ? true : var.project_settings.create_project && can(regex("^[0-9]+$", var.project_settings.folder_id))
+    error_message = "Informe um ID numérico de pasta somente para criação; organization_id deve ser omitido."
+  }
+
+  validation {
+    condition     = length(var.project_settings.labels) <= 62 && alltrue([for key, value in var.project_settings.labels : can(regex("^[a-z][a-z0-9_-]{0,62}$", key)) && can(regex("^[a-z0-9_-]{0,63}$", value))]) && !contains(keys(var.project_settings.labels), "environment") && !contains(keys(var.project_settings.labels), "managed_by")
+    error_message = "Use até 62 labels válidas em project_settings.labels; environment e managed_by são reservadas."
+  }
+}
+
+variable "deployment_settings" {
+  description = "Região, zona, prefixo e ambiente da implantação."
+  type = object({
+    environment     = optional(string, "lab")
+    resource_prefix = optional(string, "mhr-m2vm-lab")
+    region          = optional(string, "us-central1")
+    zone            = optional(string, "us-central1-a")
+  })
+  default  = {}
+  nullable = false
+
+  validation {
+    condition     = can(regex("^(lab|dev|test|prod)$", var.deployment_settings.environment))
+    error_message = "Use um ambiente entre lab, dev, test ou prod."
+  }
+
+  validation {
+    condition     = can(regex("^[a-z][a-z0-9-]{0,18}[a-z0-9]$", var.deployment_settings.resource_prefix))
+    error_message = "Use um prefixo de 2 a 20 caracteres minúsculos, começando com letra e terminando com letra ou dígito."
+  }
+
+  validation {
+    condition     = can(regex("^[a-z]+-[a-z]+[0-9]+$", var.deployment_settings.region))
+    error_message = "Informe uma região GCP válida."
+  }
+
+  validation {
+    condition     = can(regex("^[a-z]+-[a-z]+[0-9]+-[a-z]$", var.deployment_settings.zone)) && startswith(var.deployment_settings.zone, "${var.deployment_settings.region}-")
+    error_message = "Informe uma zona GCP válida dentro da região definida."
   }
 }
 
 variable "network_settings" {
   description = "Configurações da rede de destino para as VMs migradas e o balanceador global."
   type = object({
-    vpc_name      = optional(string, "maple-m2vm-target-vpc")
-    subnet_name   = optional(string, "maple-m2vm-target-subnet")
+    vpc_name      = optional(string)
+    subnet_name   = optional(string)
     subnet_cidr   = string
-    router_name   = optional(string, "maple-m2vm-router")
-    nat_name      = optional(string, "maple-m2vm-nat")
-    dns_zone_name = optional(string, "maple-migration-zone")
-    dns_name      = optional(string, "migration.maple.example.")
-    record_name   = optional(string, "orders.migration.maple.example.")
+    router_name   = optional(string)
+    nat_name      = optional(string)
+    dns_zone_name = optional(string)
+    dns_name      = optional(string)
+    record_name   = optional(string)
   })
 
   validation {
@@ -46,7 +101,7 @@ variable "network_settings" {
   }
 
   validation {
-    condition     = endswith(var.network_settings.dns_name, ".") && endswith(var.network_settings.record_name, ".")
+    condition     = endswith(coalesce(var.network_settings.dns_name, ""), ".") && endswith(coalesce(var.network_settings.record_name, ""), ".")
     error_message = "dns_name e record_name devem ser nomes DNS completos terminados em ponto."
   }
 }

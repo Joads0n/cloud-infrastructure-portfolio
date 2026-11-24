@@ -5,7 +5,7 @@
 resource "terraform_data" "m2vm_aws_source_contract" {
   input = {
     host_project_id        = local.destination_project_id
-    gcp_region             = var.platform_settings.region
+    gcp_region             = local.region
     source_name            = var.m2vm_settings.source_name
     aws_organization       = var.m2vm_settings.aws_organization
     aws_account_alias      = var.m2vm_settings.aws_account_alias
