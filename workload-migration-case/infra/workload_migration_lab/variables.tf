@@ -1,11 +1,3 @@
-variable "platform_settings" {
-  description = "Projeto de bootstrap e configurações regionais usadas pelo laboratório de migração."
-  type = object({
-    bootstrap_project_id = string
-  })
-  nullable = false
-}
-
 variable "project_settings" {
   description = "Configurações do projeto GCP de destino. O projeto é criado quando create_project é true."
   type = object({

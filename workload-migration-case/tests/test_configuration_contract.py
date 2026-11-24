@@ -31,6 +31,8 @@ class WorkloadMigrationContractTests(unittest.TestCase):
         m2vm = (ROOT / "m2vm.tf").read_text()
         locals_text = (ROOT / "locals.tf").read_text()
         self.assertIn('resource "google_project" "destination"', project)
+        self.assertNotIn('alias                 = "bootstrap"', (ROOT / "providers.tf").read_text())
+        self.assertNotIn("platform_settings", (ROOT / "variables.tf").read_text())
         self.assertIn('"vmmigration.googleapis.com"', locals_text)
         self.assertIn("m2vm_aws_source_contract", m2vm)
         self.assertIn("aws_region", m2vm)
@@ -57,6 +59,9 @@ class WorkloadMigrationContractTests(unittest.TestCase):
 
     def test_example_contains_no_credentials_or_real_aws_data(self):
         example = (ROOT / "terraform.tfvars.example").read_text()
+        self.assertIn("create_project     = true", example)
+        self.assertNotIn("platform_settings", example)
+        self.assertNotIn("fictional-bootstrap", example)
         self.assertIn("organization_id    = null", example)
         self.assertIn("folder_id          = null", example)
         self.assertIn("billing_account_id =", example)

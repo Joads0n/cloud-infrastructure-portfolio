@@ -1,6 +1,5 @@
 resource "google_project" "destination" {
-  provider = google.bootstrap
-  count    = var.project_settings.create_project ? 1 : 0
+  count = var.project_settings.create_project ? 1 : 0
 
   project_id          = var.project_settings.project_id
   name                = var.project_settings.project_name

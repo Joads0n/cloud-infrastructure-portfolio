@@ -14,7 +14,7 @@ Há também uma limitação prática do exercício: o provider Terraform Google 
 
 ## Solução proposta
 
-1. Criar um projeto GCP dedicado para o host e o destino da migração, com billing informado pelo operador.
+1. Criar o projeto GCP `fictional-m2vm-lab` com o usuário autenticado do avaliador, informando billing, hierarquia e labels.
 2. Ativar as APIs necessárias, incluindo Compute Engine e Migrate to Virtual Machines.
 3. Criar uma VPC, subnet privada, Cloud Router e Cloud NAT para o egress das VMs migradas.
 4. Configurar firewall somente para health checks do Load Balancer e administração SSH via IAP.
@@ -97,8 +97,8 @@ Ficam fora do escopo: recursos AWS, IAM AWS, credenciais AWS, bancos de dados, c
 ## Estrutura organizacional proposta
 
 ```text
-Bootstrap project / folder
-└── Projeto GCP dedicado de migração
+Projeto GCP dedicado criado pelo Terraform com o usuário do avaliador
+└── Ambiente de migração
     ├── APIs: Compute, DNS, IAM, Service Usage e M2VM
     ├── VPC privada
     │   ├── subnet regional
@@ -112,13 +112,13 @@ Bootstrap project / folder
     └── Global external Application Load Balancer
 ```
 
-O projeto bootstrap somente cria o projeto de destino. O estado Terraform deste case deve ser isolado do estado dos demais cases.
+Não existe projeto bootstrap neste case. O estado Terraform deste case deve ser isolado do estado dos demais cases.
 
 ## Plano de migração
 
 ### Fase 0 — preparação
 
-1. Confirmar projeto bootstrap, folder e billing account autorizados.
+1. Confirmar que o usuário autenticado pode criar o projeto, associar billing e usar a organização ou folder informado.
 2. Aplicar o Terraform com `active_backend = "aws"` e sem self-links de destino.
 3. Confirmar que as APIs, VPC, subnet, NAT, firewall e VIP do Load Balancer foram criados.
 4. Confirmar que nenhum IP público foi atribuído a uma VM GCP; o backend ficará vazio nesta fase.

@@ -4,11 +4,11 @@
 
 # Projeto, faturamento, hierarquia e labels do projeto
 project_settings = {
-  # O projeto será criado manualmente pelo avaliador; o Terraform não o cria.
-  create_project     = false
+  # O projeto será criado por este root com o usuário autenticado do avaliador.
+  create_project     = true
   project_id         = "fictional-m2vm-lab"
   project_name       = "Maple Harbor VM Migration Lab"
-  billing_account_id = null
+  billing_account_id = "000000-000000-000000"
   organization_id    = null
   folder_id          = null
   labels = {
@@ -25,11 +25,6 @@ deployment_settings = {
   resource_prefix = "mhr-m2vm-lab"
   region          = "us-central1"
   zone            = "us-central1-a"
-}
-
-# Projeto usado para criar o projeto de destino
-platform_settings = {
-  bootstrap_project_id = "fictional-bootstrap"
 }
 
 # Rede; nomes podem ser omitidos para usar o prefixo do ambiente
