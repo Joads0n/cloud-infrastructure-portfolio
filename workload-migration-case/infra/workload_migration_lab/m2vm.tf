@@ -1,7 +1,7 @@
-# The Google Terraform provider exposes the vmmigration API service, but not
-# first-class resources for AWS Source or MigratingVM objects. This resource
-# keeps the non-secret M2VM source contract visible in Terraform state without
-# pretending that a fictional AWS account was registered or contacted.
+# O provider Terraform Google expõe a API vmmigration, mas não possui recursos
+# nativos para objetos AWS Source ou MigratingVM. Este recurso mantém o contrato
+# não sensível da origem M2VM visível no estado sem fingir que uma conta AWS
+# fictícia foi registrada ou contatada.
 resource "terraform_data" "m2vm_aws_source_contract" {
   input = {
     host_project_id        = local.destination_project_id

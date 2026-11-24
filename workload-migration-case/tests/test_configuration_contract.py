@@ -1,4 +1,4 @@
-"""Static contract tests for the AWS-to-GCP VM migration case."""
+"""Testes estáticos do contrato do case de migração de VMs AWS para GCP."""
 
 from pathlib import Path
 import unittest

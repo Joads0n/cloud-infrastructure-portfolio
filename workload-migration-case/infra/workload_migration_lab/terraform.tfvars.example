@@ -10,7 +10,7 @@ platform_settings = {
 
 project_settings = {
   project_id         = "prj-maple-m2vm-lab"
-  project_name       = "Maple Harbor VM migration lab"
+  project_name       = "Laboratório de migração de VMs Maple Harbor"
   billing_account_id = "REPLACE_WITH_BILLING_ACCOUNT_ID"
   folder_id          = "REPLACE_WITH_FOLDER_ID_OR_EMPTY"
   create_project     = true
@@ -29,8 +29,8 @@ m2vm_settings = {
   source_vm_tag_value       = "true"
   source_security_group_ids = ["sg-fictional-m2vm-source"]
 
-  # The two VMs must be created by M2VM, not by this Terraform root.
-  # Fill these after M2VM creates the GCP destination VMs.
+  # As duas VMs devem ser criadas pelo M2VM, não por este root Terraform.
+  # Preencha estes valores depois que o M2VM criar as VMs de destino no GCP.
   target_instance_self_links = []
 }
 

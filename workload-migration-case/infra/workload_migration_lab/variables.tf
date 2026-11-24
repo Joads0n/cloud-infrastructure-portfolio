@@ -1,5 +1,5 @@
 variable "platform_settings" {
-  description = "Bootstrap project and regional settings used by the migration lab."
+  description = "Projeto de bootstrap e configurações regionais usadas pelo laboratório de migração."
   type = object({
     bootstrap_project_id = string
     region               = string
@@ -9,7 +9,7 @@ variable "platform_settings" {
 }
 
 variable "project_settings" {
-  description = "Destination GCP project settings. The project is created when create_project is true."
+  description = "Configurações do projeto GCP de destino. O projeto é criado quando create_project é true."
   type = object({
     project_id         = string
     project_name       = optional(string, "Maple Harbor VM migration lab")
@@ -23,12 +23,12 @@ variable "project_settings" {
       var.project_settings.billing_account_id != "" &&
       can(regex("^[0-9A-Fa-f-]{6,}$", var.project_settings.billing_account_id))
     )
-    error_message = "A billing account ID is required when create_project is true."
+    error_message = "O ID da conta de faturamento é obrigatório quando create_project é true."
   }
 }
 
 variable "network_settings" {
-  description = "Destination network settings for the migrated VMs and global load balancer."
+  description = "Configurações da rede de destino para as VMs migradas e o balanceador global."
   type = object({
     vpc_name      = optional(string, "maple-m2vm-target-vpc")
     subnet_name   = optional(string, "maple-m2vm-target-subnet")
@@ -42,17 +42,17 @@ variable "network_settings" {
 
   validation {
     condition     = can(cidrhost(var.network_settings.subnet_cidr, 0))
-    error_message = "subnet_cidr must be a valid IPv4 CIDR."
+    error_message = "subnet_cidr deve ser um CIDR IPv4 válido."
   }
 
   validation {
     condition     = endswith(var.network_settings.dns_name, ".") && endswith(var.network_settings.record_name, ".")
-    error_message = "dns_name and record_name must be fully qualified DNS names ending with a dot."
+    error_message = "dns_name e record_name devem ser nomes DNS completos terminados em ponto."
   }
 }
 
 variable "m2vm_settings" {
-  description = "Fictional AWS source contract and post-migration VM backend settings."
+  description = "Contrato da origem AWS fictícia e configurações do backend das VMs após a migração."
   type = object({
     source_name                = optional(string, "maple-aws-source")
     aws_organization           = optional(string, "Maple Harbor Retail AWS organization")
@@ -66,17 +66,17 @@ variable "m2vm_settings" {
 
   validation {
     condition     = length(var.m2vm_settings.target_instance_self_links) == 0 || length(var.m2vm_settings.target_instance_self_links) == 2
-    error_message = "Provide either no target instance self-links before migration or exactly two after migration."
+    error_message = "Informe nenhum self-link antes da migração ou exatamente dois após a migração."
   }
 
   validation {
     condition     = length(var.m2vm_settings.source_security_group_ids) > 0
-    error_message = "At least one fictional AWS security group filter is required."
+    error_message = "É necessário informar pelo menos um filtro de security group AWS fictício."
   }
 }
 
 variable "cutover_settings" {
-  description = "DNS cutover and rollback settings."
+  description = "Configurações de cutover e rollback do DNS."
   type = object({
     active_backend      = optional(string, "aws")
     fictional_source_ip = optional(string, "198.51.100.20")
@@ -85,11 +85,11 @@ variable "cutover_settings" {
 
   validation {
     condition     = contains(["aws", "gcp"], var.cutover_settings.active_backend)
-    error_message = "active_backend must be either aws or gcp."
+    error_message = "active_backend deve ser aws ou gcp."
   }
 
   validation {
     condition     = var.cutover_settings.ttl >= 30 && var.cutover_settings.ttl <= 300
-    error_message = "DNS TTL must be between 30 and 300 seconds for the exercise."
+    error_message = "O TTL do DNS deve estar entre 30 e 300 segundos para o exercício."
   }
 }

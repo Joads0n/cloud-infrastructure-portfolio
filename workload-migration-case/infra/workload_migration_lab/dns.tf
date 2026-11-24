@@ -1,7 +1,7 @@
 resource "google_dns_managed_zone" "migration" {
   name        = var.network_settings.dns_zone_name
   dns_name    = var.network_settings.dns_name
-  description = "Fictional DNS zone used to exercise AWS-to-GCP VM cutover and rollback."
+  description = "Zona DNS fictícia para exercitar o cutover e rollback das VMs AWS para GCP."
   visibility  = "public"
 }
 
