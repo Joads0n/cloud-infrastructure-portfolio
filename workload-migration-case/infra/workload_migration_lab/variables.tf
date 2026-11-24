@@ -1,13 +1,52 @@
-variable "project_settings" {
-  description = "Projeto GCP criado manualmente pelo avaliador."
+variable "platform_settings" {
+  description = "Projeto de bootstrap e configurações regionais usadas pelo laboratório de migração."
   type = object({
-    project_id = string
+    bootstrap_project_id = string
+  })
+  nullable = false
+}
+
+variable "project_settings" {
+  description = "Configurações do projeto GCP de destino. O projeto é criado quando create_project é true."
+  type = object({
+    project_id         = string
+    project_name       = optional(string, "Maple Harbor VM migration lab")
+    billing_account_id = optional(string)
+    organization_id    = optional(string)
+    folder_id          = optional(string)
+    labels             = optional(map(string), {})
+    create_project     = optional(bool, true)
   })
   nullable = false
 
   validation {
     condition     = can(regex("^[a-z][a-z0-9-]{4,28}[a-z0-9]$", var.project_settings.project_id))
     error_message = "Informe um ID de projeto GCP válido."
+  }
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9 '!-]{4,30}$", var.project_settings.project_name))
+    error_message = "Use um nome de projeto GCP com 4 a 30 caracteres."
+  }
+
+  validation {
+    condition     = var.project_settings.create_project ? can(regex("^[A-Fa-f0-9]{6}-[A-Fa-f0-9]{6}-[A-Fa-f0-9]{6}$", var.project_settings.billing_account_id)) : var.project_settings.billing_account_id == null
+    error_message = "A criação exige um ID de conta de faturamento no formato XXXXXX-XXXXXX-XXXXXX; o modo de projeto existente exige null."
+  }
+
+  validation {
+    condition     = var.project_settings.organization_id == null ? true : var.project_settings.create_project && var.project_settings.folder_id == null && can(regex("^[0-9]+$", var.project_settings.organization_id))
+    error_message = "Informe um ID numérico de organização somente para criação e sem pasta."
+  }
+
+  validation {
+    condition     = var.project_settings.folder_id == null ? true : var.project_settings.create_project && can(regex("^[0-9]+$", var.project_settings.folder_id))
+    error_message = "Informe um ID numérico de pasta somente para criação; organization_id deve ser omitido."
+  }
+
+  validation {
+    condition     = length(var.project_settings.labels) <= 62 && alltrue([for key, value in var.project_settings.labels : can(regex("^[a-z][a-z0-9_-]{0,62}$", key)) && can(regex("^[a-z0-9_-]{0,63}$", value))]) && !contains(keys(var.project_settings.labels), "environment") && !contains(keys(var.project_settings.labels), "managed_by")
+    error_message = "Use até 62 labels válidas em project_settings.labels; environment e managed_by são reservadas."
   }
 }
 

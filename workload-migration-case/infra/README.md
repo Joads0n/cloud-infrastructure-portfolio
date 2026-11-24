@@ -6,7 +6,8 @@ Este root provisiona somente o lado GCP de uma migração de duas VMs. A origem 
 
 - Terraform 1.16.5 e o provider Google bloqueado em `8.5.0`.
 - `gcloud auth application-default login` concluído.
-- Projeto GCP criado manualmente pelo avaliador, com billing, hierarquia, labels e permissões já configurados.
+- Projeto bootstrap com permissão para criar projeto e associar billing account, quando `create_project = true`.
+- Billing account e folder informados em um arquivo privado.
 - Uma conta AWS real somente para a fase de registro e replicação do M2VM; ela não é necessária para os testes estáticos ou para preparar o destino GCP.
 
 ## Verificações locais
@@ -28,7 +29,7 @@ mkdir -p .private
 cp workload-migration-case/infra/workload_migration_lab/terraform.tfvars.example .private/maple-m2vm.tfvars
 ```
 
-Edite o arquivo privado e informe o `project_id` criado pelo avaliador. O Terraform não cria projeto bootstrap nem projeto de destino. Revise também `environment`, `resource_prefix`, `region` e `zone`; a zona deve pertencer à região. Mantenha `target_instance_self_links = []` até o M2VM criar as duas VMs GCP.
+Edite o arquivo privado e informe `bootstrap_project_id`, `project_id`, billing account e folder. Mantenha os labels de projeto sem as chaves reservadas `environment` e `managed_by`. Revise também `environment`, `resource_prefix`, `region` e `zone`; a zona deve pertencer à região. Mantenha `target_instance_self_links = []` até o M2VM criar as duas VMs GCP.
 
 ## Plan e apply do lado GCP
 

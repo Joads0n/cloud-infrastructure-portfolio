@@ -1,10 +1,21 @@
+# Somente valores fictícios. Copie para um arquivo privado e substitua o projeto bootstrap e o billing.
+# Labels de projeto não devem repetir as reservadas environment e managed_by.
+# A zona precisa pertencer à região definida em deployment_settings.
 
-# O avaliador cria manualmente o projeto GCP, configura billing, hierarquia e labels.
-# Este Terraform não cria projeto bootstrap nem projeto de destino.
-# O projeto informado deve existir e ser acessível pela autenticação local.
-
+# Projeto, faturamento, hierarquia e labels do projeto
 project_settings = {
-  project_id = "fictional-m2vm-lab"
+  create_project     = true
+  project_id         = "fictional-m2vm-lab"
+  project_name       = "Maple Harbor VM Migration Lab"
+  billing_account_id = "000000-000000-000000"
+  organization_id    = null
+  folder_id          = null
+  labels = {
+    owner          = "platform"
+    cost_center    = "cloud-lab"
+    scope          = "vm-migration"
+    migration_type = "aws-to-gcp"
+  }
 }
 
 # Ambiente, prefixo, região e zona dos recursos
@@ -13,6 +24,11 @@ deployment_settings = {
   resource_prefix = "mhr-m2vm-lab"
   region          = "us-central1"
   zone            = "us-central1-a"
+}
+
+# Projeto usado para criar o projeto de destino
+platform_settings = {
+  bootstrap_project_id = "fictional-bootstrap"
 }
 
 # Rede; nomes podem ser omitidos para usar o prefixo do ambiente

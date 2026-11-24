@@ -14,7 +14,7 @@ Há também uma limitação prática do exercício: o provider Terraform Google 
 
 ## Solução proposta
 
-1. Usar um projeto GCP dedicado criado manualmente pelo avaliador, com billing, hierarquia e labels definidos antes da execução.
+1. Criar um projeto GCP dedicado para o host e o destino da migração, com billing informado pelo operador.
 2. Ativar as APIs necessárias, incluindo Compute Engine e Migrate to Virtual Machines.
 3. Criar uma VPC, subnet privada, Cloud Router e Cloud NAT para o egress das VMs migradas.
 4. Configurar firewall somente para health checks do Load Balancer e administração SSH via IAP.
@@ -84,7 +84,7 @@ O GCP não possui uma regra de firewall que bloqueie o frontend global; a prote�
 
 | Área | Recursos | Escopo |
 | --- | --- | --- |
-| Projeto | Projeto existente + `google_project_service` | APIs de migração no projeto criado pelo avaliador |
+| Projeto | `google_project`, `google_project_service` | Projeto GCP dedicado e APIs de migração |
 | Rede | VPC, subnet privada, Cloud Router e Cloud NAT | Conectividade e egress do destino |
 | Firewall | Health checks e IAP SSH | Entrada mínima nos backends |
 | M2VM | `vmmigration.googleapis.com` e contrato Terraform não sensível | Preparação para origem AWS fictícia |
@@ -97,8 +97,8 @@ Ficam fora do escopo: recursos AWS, IAM AWS, credenciais AWS, bancos de dados, c
 ## Estrutura organizacional proposta
 
 ```text
-Projeto GCP dedicado criado pelo avaliador
-└── Ambiente de migração
+Bootstrap project / folder
+└── Projeto GCP dedicado de migração
     ├── APIs: Compute, DNS, IAM, Service Usage e M2VM
     ├── VPC privada
     │   ├── subnet regional
@@ -112,13 +112,13 @@ Projeto GCP dedicado criado pelo avaliador
     └── Global external Application Load Balancer
 ```
 
-O projeto e seus atributos organizacionais são responsabilidade do avaliador. O estado Terraform deste case deve ser isolado do estado dos demais cases.
+O projeto bootstrap somente cria o projeto de destino. O estado Terraform deste case deve ser isolado do estado dos demais cases.
 
 ## Plano de migração
 
 ### Fase 0 — preparação
 
-1. Confirmar que o projeto GCP já existe, possui billing, hierarquia, labels e permissões necessárias.
+1. Confirmar projeto bootstrap, folder e billing account autorizados.
 2. Aplicar o Terraform com `active_backend = "aws"` e sem self-links de destino.
 3. Confirmar que as APIs, VPC, subnet, NAT, firewall e VIP do Load Balancer foram criados.
 4. Confirmar que nenhum IP público foi atribuído a uma VM GCP; o backend ficará vazio nesta fase.
@@ -164,7 +164,7 @@ O rollback pode ser limitado por cache DNS, TTL, estado da aplicação e dados a
 ## Critérios de validação
 
 1. Terraform `fmt`, `validate` e testes estáticos passam.
-2. O Terraform não cria nem exclui projetos; ele configura somente o projeto informado.
+2. O projeto destino é criado somente quando `create_project = true` e possui billing informado.
 3. As APIs de Compute, DNS, IAM e M2VM estão habilitadas.
 4. O GCP possui subnet privada, Cloud NAT e nenhuma VM gerenciada pelo case possui IP público.
 5. O Load Balancer global possui exatamente duas VMs migradas no backend após a fase de destino.
@@ -176,7 +176,7 @@ O rollback pode ser limitado por cache DNS, TTL, estado da aplicação e dados a
 
 ## Implementação Terraform
 
-A implementação está em [`infra/workload_migration_lab`](infra/workload_migration_lab). O root configura as APIs, VPC, subnet, Cloud Router, Cloud NAT, firewalls, Load Balancer global e zona DNS no projeto GCP fornecido pelo avaliador. O arquivo `m2vm.tf` mantém o contrato não sensível da origem AWS porque o provider Google não fornece, nesta versão, recursos nativos para o objeto M2VM.
+A implementação está em [`infra/workload_migration_lab`](infra/workload_migration_lab). O root cria o projeto GCP, APIs, VPC, subnet, Cloud Router, Cloud NAT, firewalls, Load Balancer global e zona DNS. O arquivo `m2vm.tf` mantém o contrato não sensível da origem AWS porque o provider Google não fornece, nesta versão, recursos nativos para o objeto M2VM.
 
 Para usar uma origem real, o operador deve seguir a documentação oficial do [Create an AWS source](https://cloud.google.com/migrate/virtual-machines/docs/5.0/migrate/create-an-aws-source), nunca colocar access keys no Terraform ou no Git, e somente depois informar os self-links das duas VMs migradas.
 
@@ -189,7 +189,7 @@ workload-migration-case/
 │   ├── README.md
 │   └── workload_migration_lab/
 │       ├── versions.tf, providers.tf, variables.tf, locals.tf
-│       ├── apis.tf, network.tf, m2vm.tf
+│       ├── project.tf, network.tf, m2vm.tf
 │       ├── compute.tf, firewall.tf, load_balancer.tf, dns.tf
 │       ├── outputs.tf
 │       └── terraform.tfvars.example
